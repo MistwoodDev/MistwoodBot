@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const clear = require("clear-console");
 const config = require("./config/botConfig.json");
 
+
 var bot = new Discord.Client();
 var PREFIX = "m!";
 var mistwoodEmote = "<:mistwood:688533711033073802>";
@@ -24,7 +25,7 @@ bot.on("error", (err) => {
     console.log(err);
 });
 process.on("unhandledRejection", (err) => {
-    return;
+    console.log(err);
 });
 
 
@@ -34,7 +35,7 @@ bot.on("guildMemberAdd", (member) => {
     var playerRole = bot.guilds.get("688532826940899440").roles.get("688533140490289301");
     bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(rules => {
         rules.react("✅").then(() => {
-            var checkFilter = (reaction) => reaction.emoji.name === "✅";
+            var checkFilter = (reaction, user) => reaction.emoji.name === "✅" && user.id === member.user.id;
             var check = rules.createReactionCollector(checkFilter);
             check.on("collect", (reaction, collection) => {
                 if (!member.roles.has(playerRole)) {
