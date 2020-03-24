@@ -152,7 +152,7 @@ bot.on("message", (message) => {
                 case "farming":
                     break;
                 case "dev":
-                    fetch("https://api.mcsrvstat.us/2/178.33.93.233:25575").then(res => res.json()).then(body => {
+                    fetch(config.SATUS_ENPOINT + "178.33.93.233:25575").then(res => res.json()).then(body => {
                         var onlinePlayers = [];
                         if (body.players.list) {
                             body.players.list.forEach(elem => {
