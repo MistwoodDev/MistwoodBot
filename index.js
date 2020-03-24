@@ -94,7 +94,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
         case "688538969692045389":
             switch (reaction.emoji.name) {
                 case "✅":
-                    var playerRole = bot.guilds.get("688532826940899440-").roles.get("688533140490289301");
+                    var playerRole = bot.guilds.get("688532826940899440").roles.get("688533140490289301");
                     var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
                     if (!guildMember.roles.has(playerRole)) {
                         guildMember.addRole(playerRole);
@@ -105,7 +105,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
                     break;
                 default:
                     bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(message => {
-                        message.reactions.first().remove(reaction.users.last().id);
+                        message.reactions.last().remove(reaction.users.last().id);
                     });
                     break;
             }
