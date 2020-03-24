@@ -7,6 +7,8 @@ const config = require("./config/botConfig.json");
 var bot = new Discord.Client();
 var PREFIX = "m!";
 var mistwoodEmote = "<:mistwood:688533711033073802>";
+var skyblockEmote = "<:skyblock:692026057490169917>";
+var farmingEmote = "<:farming:692026233227051029>";
 
 var rulesMessageID = "688538969692045389";
 
@@ -52,6 +54,78 @@ bot.on("guildMemberAdd", (member) => {
 bot.on("guildMemberRemove", (member) => {
     member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.size);
 });
+
+bot.on("raw", packet => {
+    if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
+    const channel = bot.channels.get(packet.d.channel_id);
+    if (channel.messages.has(packet.d.message_id)) return;
+    channel.fetchMessage(packet.d.message_id).then(message => {
+        const emoji = packet.d.emoji.id ? `${packet.d.emoji.name}:${packet.d.emoji.id}` : packet.d.emoji.name;
+        const reaction = message.reactions.get(emoji);
+        if (reaction) reaction.users.set(packet.d.user_id, bot.users.get(packet.d.user_id));
+        if (packet.t === 'MESSAGE_REACTION_ADD') {
+            bot.emit('messageReactionAdd', reaction, bot.users.get(packet.d.user_id));
+        }
+        if (packet.t === 'MESSAGE_REACTION_REMOVE') {
+            bot.emit('messageReactionRemove', reaction, bot.users.get(packet.d.user_id));
+        }
+    });
+});
+
+bot.on("messageReactionAdd", (reaction, user) => {
+    var skyblockRole = bot.guilds.get("688532826940899440").roles.get("688673937496080421");
+    var farmingRole = bot.guilds.get("688532826940899440").roles.get("688673855413551144");
+    switch (reaction.message.id) {
+        case "692027287402709043":
+            switch (reaction.emoji.id) {
+                case "692026057490169917":
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+                    if (!guildMember.roles.has(skyblockRole)) {
+                        guildMember.addRole(skyblockRole);
+                        user.send(mistwoodEmote + " Gave you the **Skyblock** role!" + skyblockEmote);
+                    }
+                    break;
+                case "692026233227051029":
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+                    if (!guildMember.roles.has(farmingRole)) {
+                        guildMember.addRole(farmingRole);
+                        user.send(mistwoodEmote + " Gave you the **Farming** role! " + farmingEmote);
+                    }
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+});
+
+bot.on("messageReactionRemove", (reaction, user) => {
+    var skyblockRole = bot.guilds.get("688532826940899440").roles.get("688673937496080421");
+    var farmingRole = bot.guilds.get("688532826940899440").roles.get("688673855413551144");
+    switch (reaction.message.id) {
+        case "692027287402709043":
+            switch (reaction.emoji.id) {
+                case "692026057490169917":
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(user.id);
+                    if (!guildMember.roles.has(skyblockRole)) {
+                        guildMember.removeRole(skyblockRole);
+                        user.send(mistwoodEmote + " Removed the **Skyblock** role! " + skyblockEmote);
+                    }
+                    break;
+                case "692026233227051029":
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(user.id);
+                    if (!guildMember.roles.has(farmingRole)) {
+                        guildMember.removeRole(farmingRole);
+                        user.send(mistwoodEmote + " Removed the **Farming** role! " + farmingEmote);
+                    }
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+});
+
 bot.on("ready", () => {
     clear({ toStart: true });
     console.log("\nMistwood Bot ready\n----------------------------");
@@ -79,6 +153,30 @@ bot.on("ready", () => {
         } else return console.log("Coinflip error");
         bot.user.setActivity(activity, { type: type });
     }, 15000);
+    // var embed = new Discord.RichEmbed()
+    //     .setTitle(mistwoodEmote + " Mistwood | **Roles**")
+    //     .setDescription("React with the corresponding role below to obtain the role and access other channels!")
+    //     .setThumbnail("https://cdn.clipart.email/e79d15c23ca160e80ddf4bf2c6e90c80_clip-art-trees-clip-art-trees-trees-tree-clipart-free-clipart-_710-749.png")
+    //     .setColor(0x8AD61E)
+    //     .addField(skyblockEmote, "Skyblock", true)
+    //     .addField(farmingEmote, "Farming", true)
+    //     .addBlankField(true);
+    // bot.channels.get("692024614301466665").send(embed);
+
+    // skyblock.on("remove", (reaction) => {
+    //     console.log("removed " + reaction.emoji.name);
+    //     var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+    //     if (guildMember.roles.has(skyblockRole)) {
+    //         guildMember.removeRole(skyblockRole);
+    //     }
+    // });
+    // farming.on("remove", (reaction) => {
+    //     console.log("removed " + reaction.emoji.name);
+    //     var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+    //     if (guildMember.roles.has(farmingRole)) {
+    //         guildMember.removeRole(farmingRole);
+    //     }
+    // });
 });
 
 bot.on("message", (message) => {
@@ -102,7 +200,7 @@ bot.on("message", (message) => {
                                 var id = body.ID;
                                 var skin = "https://crafatar.com/renders/body/" + id.replace(/-/g, "") + ".png";
                                 var embed = new Discord.RichEmbed()
-                                    .setTitle(mistwoodEmote + " Mistwood Skyblock | **" + args[2].toLowerCase() + "**")
+                                    .setTitle(mistwoodEmote + " Mistwood Skyblock | **" + args[2].toLowerCase() + "** " + skyblockEmote)
                                     .setColor(0x8AD61E)
                                     .addField("Name:", name, true)
                                     .addField("UUID:", id, true)
@@ -125,7 +223,7 @@ bot.on("message", (message) => {
                                 var id = body.ID;
                                 var skin = "https://crafatar.com/renders/body/" + id.replace(/-/g, "") + ".png";
                                 var embed = new Discord.RichEmbed()
-                                    .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "**")
+                                    .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
                                     .setColor(0x8AD61E)
                                     .addField("Name:", name, true)
                                     .addField("UUID:", id, true)
