@@ -35,21 +35,6 @@ process.on("unhandledRejection", (err) => {
 
 bot.on("guildMemberAdd", (member) => {
     member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.size);
-    var playerRole = bot.guilds.get("688532826940899440").roles.get("688533140490289301");
-    bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(rules => {
-        rules.react("✅").then(() => {
-            var checkFilter = (reaction, user) => reaction.emoji.name === "✅";
-            var check = rules.createReactionCollector(checkFilter);
-            check.on("collect", (reaction, collection) => {
-                if (!member.roles.has(playerRole)) {
-                    member.addRole(playerRole);
-                }
-                bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(message => {
-                    message.reactions.first().remove(reaction.users.last().id);
-                });
-            });
-        });
-    });
 });
 bot.on("guildMemberRemove", (member) => {
     member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.size);
@@ -103,6 +88,22 @@ bot.on("messageReactionAdd", (reaction, user) => {
                             }
                             break;
                     }
+                    break;
+            }
+            break;
+        case "688538969692045389":
+            switch (reaction.emoji.name) {
+                case "✅":
+                    var playerRole = bot.guilds.get("688532826940899440-").roles.get("688533140490289301");
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+                    if (!guildMember.roles.has(playerRole)) {
+                        guildMember.addRole(playerRole);
+                    }
+                    bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(message => {
+                        message.reactions.first().remove(reaction.users.last().id);
+                    });
+                    break;
+                default:
                     break;
             }
             break;
