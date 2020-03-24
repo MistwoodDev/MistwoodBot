@@ -104,6 +104,9 @@ bot.on("messageReactionAdd", (reaction, user) => {
                     });
                     break;
                 default:
+                    bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(message => {
+                        message.reactions.first().remove(reaction.users.last().id);
+                    });
                     break;
             }
             break;
