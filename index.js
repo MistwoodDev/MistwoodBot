@@ -161,21 +161,28 @@ bot.on("message", (message) => {
                         } else onlinePlayers.push("No players online");
                         if (body.online) var online = "Online :white_check_mark:";
                         else online = "Offline :x:";
-                        var version = body.software + " " + body.version;
-                        var players = body.players.online + "/" + body.players.max;
                         var embed = new Discord.RichEmbed()
                             .setTitle(mistwoodEmote + " Mistwood Dev Server | **Status**")
                             .setColor(0x8AD61E)
                             .addField("Status:", online, true)
-                            .addField("Version:", version, true)
-                            .addBlankField(true)
-                            .addField("Players:", players, true)
-                            .addBlankField(true)
-                            .addBlankField(true)
-                            .addField("Players online:", onlinePlayers.join("\n"), true)
-                            .addBlankField(true)
-                            .addBlankField(true)
                             .setFooter("178.33.93.233:25575");
+                        if (body.online) {
+                            embed.setDescription(body.motd.clean);
+                        }
+                        if (body.version && body.software) {
+                            embed.addField("Version:", body.software + " " + body.version, true);
+                            embed.addBlankField(true);
+                        }
+                        if (body.players) {
+                            embed.addField("Players:", body.players.online + "/" + body.players.max, true);
+                            embed.addBlankField(true);
+                            embed.addBlankField(true);
+                        }
+                        if (body.players) {
+                            embed.addField("Players online:", onlinePlayers.join("\n"), true);
+                            embed.addBlankField(true);
+                            embed.addBlankField(true);
+                        }
                         message.channel.send(embed);
                     });
                     break;
