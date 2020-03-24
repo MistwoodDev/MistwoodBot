@@ -36,14 +36,14 @@ bot.on("guildMemberAdd", (member) => {
     var playerRole = bot.guilds.get("688532826940899440").roles.get("688533140490289301");
     bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(rules => {
         rules.react("✅").then(() => {
-            var checkFilter = (reaction, user) => reaction.emoji.name === "✅" && user.id === member.user.id;
+            var checkFilter = (reaction, user) => reaction.emoji.name === "✅";
             var check = rules.createReactionCollector(checkFilter);
             check.on("collect", (reaction, collection) => {
                 if (!member.roles.has(playerRole)) {
                     member.addRole(playerRole);
                 }
                 bot.channels.get("688537181786079240").fetchMessage("688538969692045389").then(message => {
-                    message.reactions.first().remove(member.user.id);
+                    message.reactions.first().remove(reaction.users.last().id);
                 });
             });
         });
