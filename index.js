@@ -208,61 +208,94 @@ bot.on("message", (message) => {
     if (!message.content.startsWith(PREFIX)) return;
     var args = message.content.slice(PREFIX.length).split(" ");
     switch (args[0].toLowerCase()) {
-        case "info":
-            if (!args[1]) return message.channel.send(":x: **No arguments given**\n**Usage:** " + PREFIX + "info <skyblock/farming> <playerName>\n**Example(s):** " + PREFIX + "info farming fried_fetus69\n                        " + PREFIX + "info skyblock fried_fetus69");
+        case "skyblock":
+        case "s":
+            fetch(config.API_ENDPOINT + "skyblock/players/" + args[1].toLowerCase()).then(res => res.json()).then(body => {
+                if (body.statusMessage) return message.channel.send(":x: **Couldn't find player with name \"" + args[1].toLowerCase() + "\"**");
+                var islandID = body.IslandID;
+                var name = body.Name;
+                var islandPermission = body.IslandPermission;
+                var id = body.ID;
+                var skin = "https://crafatar.com/renders/body/" + id.replace(/-/g, "") + ".png";
+                var embed = new Discord.RichEmbed()
+                    .setTitle(mistwoodEmote + " Mistwood Skyblock | **" + args[1].toLowerCase() + "** " + skyblockEmote)
+                    .setColor(0x8AD61E)
+                    .addField("Name:", name, true)
+                    .addField("UUID:", id, true)
+                    .setThumbnail(skin)
+                    .addBlankField(true)
+                    .addField("Island ID:", islandID.replace("null", "Not in an island"), true)
+                    .addField("Island Rank:", islandPermission.replace("null", "Not in an island"), true)
+                    .addBlankField(true);
+                return;
+                message.channel.send(embed);
+            });
+            break;
+        case "farming":
+        case "f":
+            if (!args[1]) return message.channel.send(":x: **No arguments given**");
             else {
-                if (!args[2]) return message.channel.send(":x: **No player name given**");
-                else {
-                    switch (args[1].toLowerCase()) {
-                        case "skyblock":
-                        case "s":
-                            fetch(config.API_ENDPOINT + "skyblock/players/" + args[2].toLowerCase()).then(res => res.json()).then(body => {
-                                if (body.statusMessage) return message.channel.send(":x: **Couldn't find player with name \"" + args[2].toLowerCase() + "\"**");
-                                var islandID = body.IslandID;
-                                var name = body.Name;
-                                var islandPermission = body.IslandPermission;
-                                var id = body.ID;
-                                var skin = "https://crafatar.com/renders/body/" + id.replace(/-/g, "") + ".png";
-                                var embed = new Discord.RichEmbed()
-                                    .setTitle(mistwoodEmote + " Mistwood Skyblock | **" + args[2].toLowerCase() + "** " + skyblockEmote)
-                                    .setColor(0x8AD61E)
-                                    .addField("Name:", name, true)
-                                    .addField("UUID:", id, true)
-                                    .setThumbnail(skin)
-                                    .addBlankField(true)
-                                    .addField("Island ID:", islandID.replace("null", "Not in an island"), true)
-                                    .addField("Island Rank:", islandPermission.replace("null", "Not in an island"), true)
-                                    .addBlankField(true);
-                                return;
-                                message.channel.send(embed);
-                            });
-                            break;
-                        case "farming":
-                        case "f":
-                            fetch(config.API_ENDPOINT + "farming/players/" + args[2].toLowerCase()).then(res => res.json()).then(body => {
-                                if (body.statusMessage) return message.channel.send(":x: **Couldn't find player with name \"" + args[2].toLowerCase() + "\"**");
-                                var farmID = body.FarmID;
-                                var name = body.Name;
-                                var farmPermission = body.FarmPermission;
-                                var id = body.ID;
-                                var skin = "https://crafatar.com/renders/body/" + id.replace(/-/g, "") + ".png";
+                switch (args[1].toLowerCase()) {
+                    case "player":
+                    case "p":
+                        fetch(config.API_ENDPOINT + "farming/players/" + args[2].toLowerCase()).then(res => res.json()).then(body => {
+                            if (body.statusMessage) return message.channel.send(":x: **Couldn't find player with name \"" + args[2].toLowerCase() + "\"**");
+                            var farmID = body.FarmID;
+                            var name = body.Name;
+                            var farmPermission = body.FarmPermission;
+                            var id = body.ID;
+                            var skin = "https://crafatar.com/renders/body/" + id.replace(/-/g, "") + ".png";
+                            var embed = new Discord.RichEmbed()
+                                .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
+                                .setColor(0x8AD61E)
+                                .addField("Name:", name, true)
+                                .addField("UUID:", id, true)
+                                .setThumbnail(skin)
+                                .addBlankField(true)
+                                .addField("Farm ID:", farmID.replace("null", "Not in a farm"), true)
+                                .addField("Farm Rank:", farmPermission.replace("null", "Not in a farm"), true)
+                                .addBlankField(true)
+                                .setFooter("ip here");
+                            message.channel.send(embed);
+                        });
+                        break;
+                    case "farm":
+                    case "f":
+                        fetch(config.API_ENDPOINT + "farming/farms/" + args[2].toLowerCase()).then(res => res.json()).then(body => {
+                            if (body.statusMessage) return message.channel.send(":x: **Couldn't find farm with name \"" + args[2].toLowerCase() + "\"**");
+                            var farmID = body.FarmID;
+                            var name = body.Name;
+                            var farmPermission = body.FarmPermission;
+                            var ownerUUID = body.Owner.replace(/-/g, "");
+                            var members = [];
+                            for (i in body.Players) {
+                                fetch("https://api.mojang.com/user/profiles/" + body.Players[i].replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
+                                    members.push("- **" + body[0].name + "**");
+                                });
+                            }
+                            fetch("https://api.mojang.com/user/profiles/" + ownerUUID + "/names").then(res => res.json()).then(body => {
+                                var ownerName = body[0].name;
+                                //var icon = "";
                                 var embed = new Discord.RichEmbed()
                                     .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
                                     .setColor(0x8AD61E)
                                     .addField("Name:", name, true)
-                                    .addField("UUID:", id, true)
-                                    .setThumbnail(skin)
+                                    .addField("Owner:", ownerName, true)
+                                    //.setThumbnail(icon)
                                     .addBlankField(true)
                                     .addField("Farm ID:", farmID.replace("null", "Not in a farm"), true)
                                     .addField("Farm Rank:", farmPermission.replace("null", "Not in a farm"), true)
                                     .addBlankField(true)
+                                    .addField("Farm Members:", members.join("\n"), true)
+                                    .addBlankField(true)
+                                    .addBlankField(true)
                                     .setFooter("ip here");
                                 message.channel.send(embed);
                             });
-                            break;
-                        default:
-                            break;
-                    }
+                        });
+                        break;
+                    default:
+                        break;
                 }
             }
             break;
@@ -276,10 +309,12 @@ bot.on("message", (message) => {
                 case "dev":
                     fetch(config.STATUS_ENPOINT + "178.33.93.233:25575").then(res => res.json()).then(body => {
                         var onlinePlayers = [];
-                        if (body.players.list) {
-                            body.players.list.forEach(elem => {
-                                onlinePlayers.push("- **" + elem + "**");
-                            });
+                        if (body.players) {
+                            if (body.players.list) {
+                                body.players.list.forEach(elem => {
+                                    onlinePlayers.push("- **" + elem + "**");
+                                });
+                            } else onlinePlayers.push("No players online");
                         } else onlinePlayers.push("No players online");
                         if (body.online) var online = "Online :white_check_mark:";
                         else online = "Offline :x:";
