@@ -87,6 +87,11 @@ bot.on("messageReactionAdd", (reaction, user) => {
                                 user.send(mistwoodEmote + " Gave you the **Notifications** role! 🔔");
                             }
                             break;
+                        default:
+                            bot.channels.get("692024614301466665").fetchMessage("692051088286679051").then(message => {
+                                message.reactions.last().remove(reaction.users.last().id);
+                            });
+                            break;
                     }
                     break;
             }
