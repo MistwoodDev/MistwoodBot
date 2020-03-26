@@ -3,8 +3,6 @@ const clear = require("clear-console");
 const fetch = require("node-fetch");
 const config = require("./config/botConfig.json");
 const Jimp = require("jimp");
-const writeText = require("add-text-to-image");
-const fs = require("fs");
 
 
 var bot = new Discord.Client();
