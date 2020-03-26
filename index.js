@@ -2,6 +2,9 @@ const Discord = require("discord.js");
 const clear = require("clear-console");
 const fetch = require("node-fetch");
 const config = require("./config/botConfig.json");
+const Jimp = require("jimp");
+const writeText = require("add-text-to-image");
+const fs = require("fs");
 
 
 var bot = new Discord.Client();
@@ -201,6 +204,17 @@ bot.on("ready", () => {
     //         });
     //     });
     // });
+    Jimp.loadFont(Jimp.FONT_SANS_14_BLACK).then(font => {
+        Jimp.read("hiclipart.com.png", (err, img) => {
+            if (err) throw err;
+            img
+                .crop(0, 0, 1267, 375)
+                .resize(200, 60)
+                .print(font, 50, 25, 'wassup')
+                .background(0xFFFFFF)
+                .write("plate.png");
+        });
+    });
 });
 
 bot.on("message", (message) => {
@@ -240,7 +254,7 @@ bot.on("message", (message) => {
                     case "p":
                         fetch(config.API_ENDPOINT + "farming/players/" + args[2].toLowerCase()).then(res => res.json()).then(body => {
                             if (body.statusMessage) return message.channel.send(":x: **Couldn't find player with name \"" + args[2].toLowerCase() + "\"**");
-                            var farmID = body.FarmID;
+                            var farmName = body.FarmName;
                             var name = body.Name;
                             var farmPermission = body.FarmPermission;
                             var id = body.ID;
@@ -248,11 +262,11 @@ bot.on("message", (message) => {
                             var embed = new Discord.RichEmbed()
                                 .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
                                 .setColor(0x8AD61E)
-                                .addField("Name:", name, true)
-                                .addField("UUID:", id, true)
                                 .setThumbnail(skin)
+                                .addField("Name:", name, true)
                                 .addBlankField(true)
-                                .addField("Farm ID:", farmID.replace("null", "Not in a farm"), true)
+                                .addBlankField(true)
+                                .addField("Farm Name:", farmName.replace("null", "Not in a farm"), true)
                                 .addField("Farm Rank:", farmPermission.replace("null", "Not in a farm"), true)
                                 .addBlankField(true)
                                 .setFooter("ip here");
@@ -263,30 +277,31 @@ bot.on("message", (message) => {
                     case "f":
                         fetch(config.API_ENDPOINT + "farming/farms/" + args[2].toLowerCase()).then(res => res.json()).then(body => {
                             if (body.statusMessage) return message.channel.send(":x: **Couldn't find farm with name \"" + args[2].toLowerCase() + "\"**");
-                            var farmID = body.FarmID;
                             var name = body.Name;
-                            var farmPermission = body.FarmPermission;
-                            var ownerUUID = body.Owner.replace(/-/g, "");
+                            var farmDate = body.Date;
+                            var blocks = body.Info;
+                            var ownerUUID = body.Owner;
                             var members = [];
                             for (i in body.Players) {
                                 fetch("https://api.mojang.com/user/profiles/" + body.Players[i].replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
                                     members.push("- **" + body[0].name + "**");
                                 });
                             }
-                            fetch("https://api.mojang.com/user/profiles/" + ownerUUID + "/names").then(res => res.json()).then(body => {
+                            fetch("https://api.mojang.com/user/profiles/" + ownerUUID.replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
                                 var ownerName = body[0].name;
                                 //var icon = "";
                                 var embed = new Discord.RichEmbed()
                                     .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
                                     .setColor(0x8AD61E)
-                                    .addField("Name:", name, true)
-                                    .addField("Owner:", ownerName, true)
+                                    .addField("Farm Name:", name, true)
+                                    .addField("Farm Owner:", ownerName, true)
                                     //.setThumbnail(icon)
                                     .addBlankField(true)
-                                    .addField("Farm ID:", farmID.replace("null", "Not in a farm"), true)
-                                    .addField("Farm Rank:", farmPermission.replace("null", "Not in a farm"), true)
-                                    .addBlankField(true)
-                                    .addField("Farm Members:", members.join("\n"), true)
+                                    .addField("Farm Area:", blocks + " blocks²", true)
+                                    .addField("Farm Created:", farmDate, true)
+                                    .addBlankField(true);
+                                if (members.length === 0) members.push("No members in this farm");
+                                embed.addField("Farm Members:", members.join("\n"), true)
                                     .addBlankField(true)
                                     .addBlankField(true)
                                     .setFooter("ip here");
@@ -300,6 +315,7 @@ bot.on("message", (message) => {
             }
             break;
         case "status":
+        case "server":
             if (!args[1]) return message.channel.send(":x: **No arguments given**\n**Usage:** " + PREFIX + "status <skyblock/farming>\n**Example(s):** " + PREFIX + "status farming**");
             switch (args[1].toLowerCase()) {
                 case "skyblock":
@@ -361,6 +377,8 @@ bot.on("message", (message) => {
                 .addField("Server owner's ID: ", message.guild.ownerID, true)
                 .addBlankField(true);
             message.channel.send(embed);
+            break;
+        case "vote":
             break;
         default:
             break;
