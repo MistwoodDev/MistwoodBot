@@ -23,9 +23,8 @@ function coinflip(sides) {
 process.on("uncaughtException", (err) => {
     console.log(err);
 });
-bot.on("error", (err) => {
-    console.log(err);
-});
+bot.on('warn', console.warn);
+bot.on('error', console.error);
 process.on("unhandledRejection", (err) => {
     console.log(err);
 });
@@ -64,7 +63,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
         case "692051088286679051":
             switch (reaction.emoji.id) {
                 case "692026057490169917":
-                    let guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
                     if (!guildMember.roles.has(skyblockRole)) {
                         guildMember.addRole(skyblockRole);
                         user.send(mistwoodEmote + " Gave you the **Skyblock** role!" + skyblockEmote);
@@ -99,7 +98,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
             switch (reaction.emoji.name) {
                 case "✅":
                     var playerRole = bot.guilds.get("688532826940899440").roles.get("688533140490289301");
-                    let guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
+                    var guildMember = bot.guilds.get("688532826940899440").members.get(reaction.users.last().id);
                     if (!guildMember.roles.has(playerRole)) {
                         guildMember.addRole(playerRole);
                     }
@@ -161,7 +160,7 @@ bot.on("messageReactionRemove", (reaction, user) => {
 bot.on("ready", () => {
     clear({ toStart: true });
     console.log("\nMistwood Bot ready\n----------------------------");
-    bot.guilds.get("688532826940899440").channels.get("688540197692243968").setName("👥 Members: " + bot.guilds.get("688532826940899440").members.size);
+    bot.guilds.get("688532826940899440").channels.get("688540197692243968").setName("👥 Members: " + bot.guilds.get("688532826940899440").members.filter(member => !member.user.bot).size);
     bot.user.setActivity("for commands", { type: 'WATCHING' });
     bot.setInterval(function() {
         var types = [
@@ -201,14 +200,13 @@ bot.on("ready", () => {
     //     });
     // });
     Jimp.loadFont(Jimp.FONT_SANS_14_BLACK).then(font => {
-        Jimp.read("hiclipart.com.png", (err, img) => {
+        Jimp.read("plate.png", (err, img) => {
             if (err) throw err;
             img
                 .crop(0, 0, 1267, 375)
                 .resize(200, 60)
                 .print(font, 50, 25, 'wassup')
-                .background(0xFFFFFF)
-                .write("plate.png");
+                .write("writtenPlate.png");
         });
     });
 });
@@ -238,7 +236,7 @@ bot.on("message", (message) => {
                     .addField("Island Rank:", islandPermission.replace("null", "Not in an island"), true)
                     .addBlankField(true);
                 return;
-                //message.channel.send(embed);
+                message.channel.send(embed);
             });
             break;
         case "farming":
@@ -278,9 +276,9 @@ bot.on("message", (message) => {
                             var blocks = body.Info;
                             var ownerUUID = body.Owner;
                             var members = [];
-                            for (var i = 0; i < body.Players.length; i++) {
-                                fetch("https://api.mojang.com/user/profiles/" + body.Players[i].replace(/-/g, "") + "/names").then(res => res.json()).then(data => {
-                                    members.push("- **" + data[0].name + "**");
+                            for (i in body.Players) {
+                                fetch("https://api.mojang.com/user/profiles/" + body.Players[i].replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
+                                    members.push("- **" + body[0].name + "**");
                                 });
                             }
                             fetch("https://api.mojang.com/user/profiles/" + ownerUUID.replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
@@ -328,7 +326,7 @@ bot.on("message", (message) => {
                                 });
                             } else onlinePlayers.push("No players online");
                         } else onlinePlayers.push("No players online");
-                        if (body.online) online = "Online :white_check_mark:";
+                        if (body.online) var online = "Online :white_check_mark:";
                         else online = "Offline :x:";
                         var embed = new Discord.RichEmbed()
                             .setTitle(mistwoodEmote + " Mistwood Dev Server | **Status**")
