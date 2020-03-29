@@ -22,9 +22,9 @@ function coinflip(sides) {
 
 bot.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync("../MistwoodBot/commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) {
-    var command = require(`../MistwoodBot/commands/${file}`);
+    var command = require(`./commands/${file}`);
     bot.commands.set(command.help.name, command);
 }
 
