@@ -25,7 +25,8 @@ module.exports.run = (bot, message, args) => {
             var command = bot.commands.get(args[1].toLowerCase());
             if (command) {
                 embed.addField(PREFIX + command.help.name, command.help.description)
-                    .addField("Usage: ", command.help.usage);
+                    .addField("Usage: ", command.help.usage)
+                    .addField("Aliases: ", command.help.aliases.split(";").join(", "));
             } else {
                 bot.commands.forEach(command => {
                     for (i in command.help.aliases) {

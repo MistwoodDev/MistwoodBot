@@ -1,8 +1,6 @@
 const Discord = require("discord.js");
 const clear = require("clear-console");
-const fetch = require("node-fetch");
 const fs = require("fs");
-const Jimp = require("jimp");
 const config = require("./config/botConfig.json");
 
 
@@ -207,16 +205,6 @@ bot.on("ready", () => {
     //         });
     //     });
     // });
-    Jimp.loadFont(Jimp.FONT_SANS_14_BLACK).then(font => {
-        Jimp.read("plate.png", (err, img) => {
-            if (err) throw err;
-            img
-                .crop(0, 0, 1267, 375)
-                .resize(200, 60)
-                .print(font, 50, 25, 'wassup')
-                .write("writtenPlate.png");
-        });
-    });
 });
 
 bot.on("message", (message) => {

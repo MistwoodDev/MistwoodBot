@@ -45,29 +45,29 @@ module.exports.run = (bot, message, args) => {
                     var members = [];
                     for (i in body.Players) {
                         fetch("https://api.mojang.com/user/profiles/" + body.Players[i].replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
-                            members.push("- **" + body[0].name + "**");
+                            members.push("- **" + body[1].name + "**");
                         });
                     }
-                    fetch("https://api.mojang.com/user/profiles/" + ownerUUID.replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
-                        var ownerName = body[0].name;
-                        //var icon = "";
-                        var embed = new Discord.RichEmbed()
-                            .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
-                            .setColor(0x8AD61E)
-                            .addField("Farm Name:", name, true)
-                            .addField("Farm Owner:", ownerName, true)
-                            //.setThumbnail(icon)
-                            .addBlankField(true)
-                            .addField("Farm Area:", blocks + " blocks²", true)
-                            .addField("Farm Created:", farmDate, true)
-                            .addBlankField(true);
-                        if (members.length === 0) members.push("No members in this farm");
-                        embed.addField("Farm Members:", members.join("\n"), true)
-                            .addBlankField(true)
-                            .addBlankField(true)
-                            .setFooter("ip here");
-                        message.channel.send(embed);
-                    });
+                    setTimeout(function() {
+                        fetch("https://api.mojang.com/user/profiles/" + ownerUUID.replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
+                            var ownerName = body[1].name;
+                            var embed = new Discord.RichEmbed()
+                                .setTitle(mistwoodEmote + " Mistwood Farming | **" + args[2].toLowerCase() + "** " + farmingEmote)
+                                .setColor(0x8AD61E)
+                                .addField("Farm Name:", name, true)
+                                .addField("Farm Owner:", ownerName, true)
+                                .addBlankField(true)
+                                .addField("Farm Area:", blocks + " blocks²", true)
+                                .addField("Farm Created:", farmDate, true)
+                                .addBlankField(true);
+                            if (members.length === 0) members.push("No members in this farm");
+                            embed.addField("Farm Members:", members.join("\n"), true)
+                                .addBlankField(true)
+                                .addBlankField(true)
+                                .setFooter("ip here");
+                            message.channel.send(embed);
+                        });
+                    }, 750);
                 });
                 break;
             default:
