@@ -1,8 +1,9 @@
 const Discord = require("discord.js");
 const clear = require("clear-console");
 const fetch = require("node-fetch");
-const config = require("./config/botConfig.json");
+const fs = require("fs");
 const Jimp = require("jimp");
+const config = require("./config/botConfig.json");
 
 
 var bot = new Discord.Client();
@@ -19,6 +20,13 @@ function coinflip(sides) {
 }
 
 
+bot.commands = new Discord.Collection();
+
+const commandFiles = fs.readdirSync("../MistwoodBot/commands").filter(file => file.endsWith(".js"));
+for (const file of commandFiles) {
+    var command = require(`../MistwoodBot/commands/${file}`);
+    bot.commands.set(command.help.name, command);
+}
 
 process.on("uncaughtException", (err) => {
     console.log(err);
@@ -212,9 +220,27 @@ bot.on("ready", () => {
 });
 
 bot.on("message", (message) => {
+    if (message.channel.type == "dm" || message.author.bot || message.author.id === bot.user.id) return;
     if (message.isMentioned(bot.user.id)) return message.channel.send(mistwoodEmote + " My prefix is `" + PREFIX + "`");
     if (!message.content.startsWith(PREFIX)) return;
     var args = message.content.slice(PREFIX.length).split(" ");
+
+    //switch(args[0].toLowerCase()) {
+    //    default:
+    var commandFile = bot.commands.get(args[0].toLowerCase());
+    if (commandFile) {
+        commandFile.run(bot, message, args);
+    } else {
+        bot.commands.forEach(command => {
+            for (i in command.help.aliases) {
+                if (command.help.aliases.split(";")[i] === args[0].toLowerCase());
+                command.run(bot, message, args);
+            }
+        });
+    }
+    return;
+    //    break;
+    //}
     switch (args[0].toLowerCase()) {
         case "skyblock":
         case "s":
