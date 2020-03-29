@@ -4,6 +4,7 @@ const config = require("../config/botConfig.json");
 
 var PREFIX = "m!";
 var mistwoodEmote = "<:mistwood:688533711033073802>";
+var skyblockEmote = "<:skyblock:692026057490169917>";
 
 module.exports.run = (bot, message, args) => {
     fetch(config.API_ENDPOINT + "skyblock/players/" + args[1].toLowerCase()).then(res => res.json()).then(body => {
