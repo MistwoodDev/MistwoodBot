@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const fetch = require("node-fetch");
 const config = require("../config/botConfig.json");
 
 var PREFIX = "m!";
