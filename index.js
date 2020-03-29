@@ -233,8 +233,7 @@ bot.on("message", (message) => {
     } else {
         bot.commands.forEach(command => {
             for (i in command.help.aliases) {
-                if (command.help.aliases.split(";")[i] === args[0].toLowerCase());
-                command.run(bot, message, args);
+                if (command.help.aliases.split(";")[i] === args[0].toLowerCase()) command.run(bot, message, args);
             }
         });
     }
