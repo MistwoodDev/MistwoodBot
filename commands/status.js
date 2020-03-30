@@ -13,7 +13,7 @@ module.exports.run = (bot, message, args) => {
         case "farming":
             break;
         case "dev":
-            fetch(config.STATUS_ENPOINT + "178.33.93.233:25575").then(res => res.json()).then(body => {
+            fetch(config.STATUS_ENDPOINT + "178.33.93.233:25575").then(res => res.json()).then(body => {
                 var onlinePlayers = [];
                 if (body.players) {
                     if (body.players.list) {
@@ -58,5 +58,6 @@ module.exports.help = {
     name: "status",
     aliases: "server",
     description: "Fetch status and the players online on the provided server",
-    usage: PREFIX + "status <server>"
+    usage: PREFIX + "status <server>",
+    hidden: false
 };

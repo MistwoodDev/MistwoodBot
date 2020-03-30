@@ -80,5 +80,6 @@ module.exports.help = {
     name: "farming",
     aliases: "f",
     description: "Fetch information about players or farms on the Farming server",
-    usage: PREFIX + "farming <player/farm> <query>"
+    usage: PREFIX + "farming <player/farm> <query>",
+    hidden: false
 };

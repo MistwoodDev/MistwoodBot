@@ -25,5 +25,6 @@ module.exports.help = {
     name: "id",
     aliases: "",
     description: "Get information about this Discord server",
-    usage: PREFIX + "id"
+    usage: PREFIX + "id",
+    hidden: false
 };

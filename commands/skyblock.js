@@ -33,5 +33,6 @@ module.exports.help = {
     name: "skyblock",
     aliases: "s",
     description: "Fetch information about players or islands on the Skyblock server",
-    usage: PREFIX + "skyblock <player/island> <query>"
+    usage: PREFIX + "skyblock <player/island> <query>",
+    hidden: false
 };
