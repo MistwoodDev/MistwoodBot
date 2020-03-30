@@ -174,22 +174,22 @@ bot.on("ready", () => {
             "PLAYING"
         ];
         var activitiesWatching = [
-            "over " + bot.users.size + " users",
+            "over " + bot.users.filter(u => !u.bot).size + " users",
             "for commands"
         ];
         var activitiesPlaying = [
             "on Mistwood",
-            "with the settings"
+            PREFIX + "help"
         ];
         var activity = "";
         var type = types[coinflip(2)];
         if (type === "WATCHING") {
-            activity = activitiesWatching[coinflip(3)];
+            activity = activitiesWatching[coinflip(2)];
         } else if (type === "PLAYING") {
             activity = activitiesPlaying[coinflip(2)];
-        } else return console.log("Coinflip error");
+        } else return bot.user.setActivity("for commands", { type: "WATCHING" });
         bot.user.setActivity(activity, { type: type });
-    }, 15000);
+    }, 10000);
     // var embed = new Discord.RichEmbed()
     //     .setTitle(mistwoodEmote + " Mistwood | **Roles**")
     //     .setDescription("React with the corresponding emote below to obtain the role and access other channels!")
@@ -213,21 +213,19 @@ bot.on("message", (message) => {
     if (!message.content.startsWith(PREFIX)) return;
     var args = message.content.slice(PREFIX.length).split(" ");
 
-    //switch(args[0].toLowerCase()) {
-    //    default:
-    var commandFile = bot.commands.get(args[0].toLowerCase());
-    if (commandFile) {
-        commandFile.run(bot, message, args);
-    } else {
-        bot.commands.forEach(command => {
-            for (i in command.help.aliases) {
-                if (command.help.aliases.split(";")[i] === args[0].toLowerCase()) command.run(bot, message, args);
-            }
-        });
+    switch (args[0].toLowerCase()) {
+        default: var commandFile = bot.commands.get(args[0].toLowerCase());
+        if (commandFile) {
+            commandFile.run(bot, message, args);
+        } else {
+            bot.commands.forEach(command => {
+                for (i in command.help.aliases) {
+                    if (command.help.aliases.split(";")[i] === args[0].toLowerCase()) command.run(bot, message, args);
+                }
+            });
+        }
+        break;
     }
-    //    break;
-    //}
-    return;
 });
 
 bot.login(config.TOKEN);
