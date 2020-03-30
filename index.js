@@ -210,6 +210,45 @@ bot.on("ready", () => {
 bot.on("message", (message) => {
     if (message.channel.type == "dm" || message.author.bot || message.author.id === bot.user.id) return;
     if (message.isMentioned(bot.user.id)) return message.channel.send(mistwoodEmote + " My prefix is `" + PREFIX + "`");
+    switch (message.channel.id) {
+        //Suggestions
+        case "694188050963497000":
+            var lines = message.content.replace(/\*/g, "").toLowerCase().split("\n");
+            if (lines[0] && lines[0].startsWith("ign:")) {
+                if (lines[1] && lines[1].startsWith("server:")) {
+                    if (lines[2] && lines[2].startsWith("suggestion:")) {
+                        message.react("👍").then(() => {
+                            message.react("👎");
+                        });
+                    } else message.delete();
+                } else message.delete();
+            } else message.delete();
+            break;
+            //Bug reports
+        case "694188263631487067":
+            var lines = message.content.replace(/\*/g, "").toLowerCase().split("\n");
+            if (lines[0] && lines[0].startsWith("ign:")) {
+                if (lines[1] && lines[1].startsWith("server:")) {
+                    if (lines[2] && lines[2].startsWith("issue:")) {
+
+                    } else message.delete();
+                } else message.delete();
+            } else message.delete();
+            break;
+            //Support
+        case "694188328651849778":
+            var lines = message.content.replace(/\*/g, "").toLowerCase().split("\n");
+            if (lines[0] && lines[0].startsWith("ign:")) {
+                if (lines[1] && lines[1].startsWith("server:")) {
+                    if (lines[2] && lines[2].startsWith("issue:")) {
+
+                    } else message.delete();
+                } else message.delete();
+            } else message.delete();
+            break;
+        default:
+            break;
+    }
     if (!message.content.startsWith(PREFIX)) return;
     var args = message.content.slice(PREFIX.length).split(" ");
 
