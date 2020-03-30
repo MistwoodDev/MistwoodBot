@@ -1,5 +1,5 @@
 {
-    "TOKEN": "Njg4NTQ0MTE2NzA2OTAyMTA0.XoDYKg.5g4kMsSV9R8KxePmKw8z_CzhMEc",
+    "TOKEN": "YOUR TOKEN HERE",
     "API_ENDPOINT": "http://95.179.145.2:5000/api/v1/",
     "STATUS_ENDPOINT": "https://api.mcsrvstat.us/2/"
 }
