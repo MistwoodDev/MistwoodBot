@@ -256,9 +256,9 @@ bot.on("message", (message) => {
                         var embed = new Discord.RichEmbed()
                             .setTitle("**New Support ticket**")
                             .setColor(0x8AD61E)
-                            .addField("IGN:", lines[0].replace(/ign: /i, "").trim())
-                            .addField("Server:", lines[1].replace(/server: /i, "").trim())
-                            .addField("Issue:", lines.slice(2).join("\n").replace(/issue: /i, "").trim())
+                            .addField("IGN:", lines[0].replace(/ign:/i, "").trim())
+                            .addField("Server:", lines[1].replace(/server:/i, "").trim())
+                            .addField("Issue:", lines.slice(2).join("\n").replace(/issue:/i, "").trim())
                             .setAuthor(message.author.tag, message.author.avatarURL)
                             .setTimestamp();
                         botLogs.send(embed).then(() => {
