@@ -210,13 +210,14 @@ bot.on("ready", () => {
 bot.on("message", (message) => {
     if (message.channel.type == "dm" || message.author.bot || message.author.id === bot.user.id) return;
     if (message.isMentioned(bot.user.id)) return message.channel.send(mistwoodEmote + " My prefix is `" + PREFIX + "`");
+    var botLogs = bot.guilds.get("688532826940899440").channels.get("688567348831322198");
     switch (message.channel.id) {
         //Suggestions
         case "694188050963497000":
-            var lines = message.content.replace(/\*/g, "").toLowerCase().split("\n");
-            if (lines[0] && lines[0].startsWith("ign:")) {
-                if (lines[1] && lines[1].startsWith("server:")) {
-                    if (lines[2] && lines[2].startsWith("suggestion:")) {
+            var lines = message.content.replace(/\*/g, "").split("\n");
+            if (lines[0] && lines[0].toLowerCase().startsWith("ign:")) {
+                if (lines[1] && lines[1].toLowerCase().startsWith("server:")) {
+                    if (lines[2] && lines[2].toLowerCase().startsWith("suggestion:")) {
                         message.react("👍").then(() => {
                             message.react("👎");
                         });
@@ -226,22 +227,44 @@ bot.on("message", (message) => {
             break;
             //Bug reports
         case "694188263631487067":
-            var lines = message.content.replace(/\*/g, "").toLowerCase().split("\n");
-            if (lines[0] && lines[0].startsWith("ign:")) {
-                if (lines[1] && lines[1].startsWith("server:")) {
-                    if (lines[2] && lines[2].startsWith("issue:")) {
-
+            var lines = message.content.replace(/\*/g, "").split("\n");
+            if (lines[0] && lines[0].toLowerCase().startsWith("ign:")) {
+                if (lines[1] && lines[1].toLowerCase().startsWith("server:")) {
+                    if (lines[2] && lines[2].toLowerCase().startsWith("issue:")) {
+                        var embed = new Discord.RichEmbed()
+                            .setTitle("**New Bug Report ticket**")
+                            .setColor(0x8AD61E)
+                            .addField("IGN:", lines[0].replace(/ign:/i, "").trim())
+                            .addField("Server:", lines[1].replace(/server:/i, "").trim())
+                            .addField("Issue:", lines.slice(2).join("\n").replace(/issue:/i, "").trim())
+                            .setAuthor(message.author.tag, message.author.avatarURL)
+                            .setTimestamp();
+                        botLogs.send(embed).then(() => {
+                            message.delete();
+                            message.author.send(":white_check_mark: **Your Bug Report ticket has successfully been submitted. Thank you for contacting support**");
+                        });
                     } else message.delete();
                 } else message.delete();
             } else message.delete();
             break;
             //Support
         case "694188328651849778":
-            var lines = message.content.replace(/\*/g, "").toLowerCase().split("\n");
-            if (lines[0] && lines[0].startsWith("ign:")) {
-                if (lines[1] && lines[1].startsWith("server:")) {
-                    if (lines[2] && lines[2].startsWith("issue:")) {
-
+            var lines = message.content.replace(/\*/g, "").split("\n");
+            if (lines[0] && lines[0].toLowerCase().startsWith("ign:")) {
+                if (lines[1] && lines[1].toLowerCase().startsWith("server:")) {
+                    if (lines[2] && lines[2].toLowerCase().startsWith("issue:")) {
+                        var embed = new Discord.RichEmbed()
+                            .setTitle("**New Support ticket**")
+                            .setColor(0x8AD61E)
+                            .addField("IGN:", lines[0].replace(/ign: /i, "").trim())
+                            .addField("Server:", lines[1].replace(/server: /i, "").trim())
+                            .addField("Issue:", lines.slice(2).join("\n").replace(/issue: /i, "").trim())
+                            .setAuthor(message.author.tag, message.author.avatarURL)
+                            .setTimestamp();
+                        botLogs.send(embed).then(() => {
+                            message.delete();
+                            message.author.send(":white_check_mark: **Your Support ticket has successfully been submitted. Thank you for contacting support**");
+                        });
                     } else message.delete();
                 } else message.delete();
             } else message.delete();
