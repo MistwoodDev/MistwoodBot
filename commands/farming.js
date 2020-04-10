@@ -43,7 +43,7 @@ module.exports.run = (bot, message, args) => {
                     var blocks = body.Info;
                     var ownerUUID = body.Owner;
                     var members = [];
-                    for (i in body.Players) {
+                    for (var i = 0; i != body.Players.length; i++) {
                         fetch("https://api.mojang.com/user/profiles/" + body.Players[i].replace(/-/g, "") + "/names").then(res => res.json()).then(body => {
                             members.push("- **" + body[1].name + "**");
                         });

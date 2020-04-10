@@ -25,7 +25,7 @@ module.exports.run = (bot, message, args) => {
             .addField("Island Rank:", islandPermission.replace("null", "Not in an island"), true)
             .addBlankField(true);
         return;
-        message.channel.send(embed);
+        //message.channel.send(embed);
     });
 };
 

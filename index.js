@@ -38,10 +38,10 @@ process.on("unhandledRejection", (err) => {
 
 
 bot.on("guildMemberAdd", (member) => {
-    member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.size);
+    member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.filter(m => !m.bot && m.guild.id != "458425170701451305").size);
 });
 bot.on("guildMemberRemove", (member) => {
-    member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.size);
+    member.guild.channels.get("688540197692243968").setName("👥 Members: " + member.guild.members.filter(m => !m.bot && m.guild.id != "458425170701451305").size);
 });
 
 bot.on("raw", packet => {
@@ -174,7 +174,7 @@ bot.on("ready", () => {
             "PLAYING"
         ];
         var activitiesWatching = [
-            "over " + bot.users.filter(u => !u.bot).size + " users",
+            "over " + bot.guilds.get("688532826940899440").members.filter(m => !m.user.bot).size + " users",
             "for commands"
         ];
         var activitiesPlaying = [

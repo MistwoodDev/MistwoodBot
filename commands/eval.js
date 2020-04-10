@@ -7,7 +7,7 @@ var mistwoodEmote = "<:mistwood:688533711033073802>";
 module.exports.run = (bot, message, args) => {
     if (message.author.id != "375485987893149696") return;
     let code = args.slice(1).join(" ");
-    let regex = new RegExp(config.TOKEN, "g");
+    let regex = new RegExp(config.TOKEN, "gi");
     try {
         let evaled = inspect(eval(code));
         let MAX_CHARS = evaled.length + 8;
