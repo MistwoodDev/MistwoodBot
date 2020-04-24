@@ -1,0 +1,27 @@
+{
+  "name": "MistwoodBot",
+  "version": "1.0.0",
+  "description": "Discord bot for the Mistwood server",
+  "main": "index.js",
+  "dependencies": {
+    "clear-console": "^1.1.0",
+    "fs": "^0.0.1-security",
+    "discord.js": "^11.5.1",
+    "util": "^0.12.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MistwoodDev/MistwoodBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MistwoodDev/MistwoodBot/issues"
+  },
+  "homepage": "https://github.com/MistwoodDev/MistwoodBot#readme"
+}
